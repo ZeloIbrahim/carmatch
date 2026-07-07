@@ -159,6 +159,13 @@ Puis recuperer l'ensemble des dependances et lancer l'application :
 flutter pub get
 flutter run -d chrome
 ```
+## IMAGES 
+
+
+<img width="800" height="978" alt="image" src="https://github.com/user-attachments/assets/4488246e-b2b2-4ca2-82df-eb7895979845" />
+
+<img width="799" height="938" alt="image" src="https://github.com/user-attachments/assets/01aae74d-c998-4250-bc97-62d78eac778b" />
+
 
 ## Documentation de l'API
 
