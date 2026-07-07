@@ -1,5 +1,6 @@
 import random
 import json
+import os
 
 random.seed(42)
 
@@ -7,164 +8,193 @@ random.seed(42)
 # Je vais remplacer plus tard avec de l'ia (API du chatgpt pour ajouter plus de modele au lieu d'avoir un sort de tbl)
 MARQUES_MODELE = {
     "Renault": [
-        ("Twingo", "citadine", (70, 95), 5750),
-        ("Clio", "citadine", (75, 130), 7750),
-        ("Captur", "SUV", (100, 160), 12000),
-        ("Megane", "compacte", (115, 160), 10500),
-        ("Kadjar", "SUV", (115, 150), 13500),
-        ("Austral", "SUV", (130, 200), 25000),
-        ("Arkana", "SUV coupe", (140, 160), 21500),
-        ("Talisman", "berline", (150, 200), 14000),
+        ("Twingo", "citadine", (70, 95), 14000),
+        ("Clio", "citadine", (75, 130), 17000),
+        ("Captur", "SUV", (100, 160), 23000),
+        ("Megane", "compacte", (115, 160), 25000),
+        ("Kadjar", "SUV", (115, 150), 27000),
+        ("Austral", "SUV", (130, 200), 33000),
+        ("Arkana", "SUV coupe", (140, 160), 30000),
+        ("Talisman", "berline", (150, 200), 32000),
     ],
 
     "Peugeot": [
-        ("108", "citadine", (68, 82), 5750),
-        ("208", "citadine", (75, 130), 9000),
-        ("2008", "SUV", (100, 155), 12500),
-        ("308", "compacte", (110, 180), 11750),
-        ("3008", "SUV", (130, 225), 15250),
-        ("508", "berline", (130, 225), 16500),
-        ("5008", "SUV", (130, 180), 17500),
+        ("108", "citadine", (68, 82), 13000),
+        ("208", "citadine", (75, 130), 18000),
+        ("2008", "SUV", (100, 155), 23000),
+        ("308", "compacte", (110, 180), 26000),
+        ("3008", "SUV", (130, 225), 30000),
+        ("508", "berline", (130, 225), 34000),
+        ("5008", "SUV", (130, 180), 35000),
     ],
 
     "Citroen": [
-        ("C1", "citadine", (68, 82), 5250),
-        ("C3", "citadine", (83, 110), 7500),
-        ("C3 Aircross", "SUV", (110, 130), 10500),
-        ("C4", "compacte", (100, 155), 12250),
-        ("C5 Aircross", "SUV", (130, 180), 16000),
-        ("Berlingo", "familiale", (100, 130), 11750),
+        ("C1", "citadine", (68, 82), 13000),
+        ("C3", "citadine", (83, 110), 17000),
+        ("C3 Aircross", "SUV", (110, 130), 20000),
+        ("C4", "compacte", (100, 155), 25000),
+        ("C5 Aircross", "SUV", (130, 180), 29000),
+        ("Berlingo", "familiale", (100, 130), 22000),
     ],
 
     "Volkswagen": [
-        ("Up!", "citadine", (65, 90), 7500),
-        ("Polo", "citadine", (80, 150), 10500),
-        ("Golf", "compacte", (115, 245), 14000),
-        ("T-Roc", "SUV", (115, 190), 18500),
-        ("Tiguan", "SUV", (150, 245), 20000),
-        ("Passat", "berline", (150, 190), 16000),
+        ("Up!", "citadine", (65, 90), 13000),
+        ("Polo", "citadine", (80, 150), 19000),
+        ("Golf", "compacte", (115, 245), 27000),
+        ("T-Roc", "SUV", (115, 190), 27000),
+        ("Tiguan", "SUV", (150, 245), 33000),
+        ("Passat", "berline", (150, 190), 35000),
     ],
 
     "Toyota": [
-        ("Aygo X", "citadine", (72, 72), 11500),
-        ("Yaris", "citadine", (80, 130), 11500),
-        ("Corolla", "compacte", (122, 196), 18000),
-        ("C-HR", "SUV", (122, 184), 19500),
-        ("RAV4", "SUV", (160, 222), 22500),
+        ("Aygo X", "citadine", (72, 72), 15000),
+        ("Yaris", "citadine", (80, 130), 20000),
+        ("Corolla", "compacte", (122, 196), 27000),
+        ("C-HR", "SUV", (122, 184), 29000),
+        ("RAV4", "SUV", (160, 222), 35000),
     ],
 
     "Dacia": [
-        ("Sandero", "citadine", (65, 110), 6500),
-        ("Duster", "SUV", (100, 150), 10750),
-        ("Spring", "citadine", (45, 65), 10000),
-        ("Jogger", "monospace", (100, 110), 14000),
+        ("Sandero", "citadine", (65, 110), 11500),
+        ("Duster", "SUV", (100, 150), 18000),
+        ("Spring", "citadine", (45, 65), 17000),
+        ("Jogger", "monospace", (100, 110), 18000),
     ],
 
     "Ford": [
-        ("Fiesta", "citadine", (70, 140), 8250),
-        ("Focus", "compacte", (95, 190), 10500),
-        ("Puma", "SUV", (100, 155), 16500),
-        ("Kuga", "SUV", (120, 225), 16000),
+        ("Fiesta", "citadine", (70, 140), 18000),
+        ("Focus", "compacte", (95, 190), 24000),
+        ("Puma", "SUV", (100, 155), 24000),
+        ("Kuga", "SUV", (120, 225), 29000),
     ],
 
     "BMW": [
-        ("Serie 1", "compacte", (116, 306), 15500),
-        ("Serie 3", "berline", (150, 374), 20500),
-        ("X1", "SUV", (136, 231), 20000),
-        ("X3", "SUV", (150, 286), 25500),
+        ("Serie 1", "compacte", (116, 306), 29000),
+        ("Serie 3", "berline", (150, 374), 44000),
+        ("X1", "SUV", (136, 231), 36000),
+        ("X3", "SUV", (150, 286), 46000),
     ],
 
     "Mercedes": [
-        ("Classe A", "compacte", (116, 306), 20000),
-        ("Classe C", "berline", (170, 408), 24000),
-        ("GLA", "SUV", (136, 224), 22500),
-        ("GLC", "SUV", (170, 367), 31500),
+        ("Classe A", "compacte", (116, 306), 32000),
+        ("Classe C", "berline", (170, 408), 46000),
+        ("GLA", "SUV", (136, 224), 38000),
+        ("GLC", "SUV", (170, 367), 50000),
     ],
 
     "Audi": [
-        ("A1", "citadine", (95, 200), 14000),
-        ("A3", "compacte", (110, 310), 18000),
-        ("Q2", "SUV", (116, 190), 20500),
-        ("Q3", "SUV", (150, 300), 24000),
+        ("A1", "citadine", (95, 200), 24000),
+        ("A3", "compacte", (110, 310), 31000),
+        ("Q2", "SUV", (116, 190), 29000),
+        ("Q3", "SUV", (150, 300), 36000),
     ],
 
     "Fiat": [
-        ("500", "citadine", (70, 118), 7500),
-        ("Panda", "citadine", (69, 80), 6250),
-        ("Tipo", "compacte", (95, 130), 8750),
+        ("500", "citadine", (70, 118), 15000),
+        ("Panda", "citadine", (69, 80), 13000),
+        ("Tipo", "compacte", (95, 130), 18000),
     ],
 
     "Opel": [
-        ("Corsa", "citadine", (75, 130), 8250),
-        ("Astra", "compacte", (110, 180), 10750),
-        ("Mokka", "SUV", (100, 155), 14000),
-        ("Crossland", "SUV", (100, 130), 11500),
+        ("Corsa", "citadine", (75, 130), 17000),
+        ("Astra", "compacte", (110, 180), 24000),
+        ("Mokka", "SUV", (100, 155), 24000),
+        ("Crossland", "SUV", (100, 130), 22000),
     ],
 
     "Nissan": [
-        ("Micra", "citadine", (71, 117), 7500),
-        ("Juke", "SUV", (114, 117), 11750),
-        ("Qashqai", "SUV", (140, 158), 15250),
+        ("Micra", "citadine", (71, 117), 15000),
+        ("Juke", "SUV", (114, 117), 22000),
+        ("Qashqai", "SUV", (140, 158), 28000),
     ],
 
     "Hyundai": [
-        ("i10", "citadine", (67, 84), 7250),
-        ("i20", "citadine", (84, 120), 8750),
-        ("Tucson", "SUV", (136, 265), 18000),
-        ("Kona", "SUV", (120, 204), 16000),
+        ("i10", "citadine", (67, 84), 13000),
+        ("i20", "citadine", (84, 120), 17000),
+        ("Tucson", "SUV", (136, 265), 30000),
+        ("Kona", "SUV", (120, 204), 25000),
     ],
 
     "Kia": [
-        ("Picanto", "citadine", (67, 84), 7250),
-        ("Rio", "citadine", (84, 120), 8750),
-        ("Sportage", "SUV", (136, 265), 17500),
-        ("Niro", "SUV", (105, 253), 18500),
+        ("Picanto", "citadine", (67, 84), 13000),
+        ("Rio", "citadine", (84, 120), 17000),
+        ("Sportage", "SUV", (136, 265), 28000),
+        ("Niro", "SUV", (105, 253), 29000),
     ],
 
     "Skoda": [
-        ("Fabia", "citadine", (80, 150), 9250),
-        ("Octavia", "compacte", (115, 245), 13000),
-        ("Kamiq", "SUV", (95, 150), 14500),
-        ("Karoq", "SUV", (115, 190), 16000),
+        ("Fabia", "citadine", (80, 150), 18000),
+        ("Octavia", "compacte", (115, 245), 26000),
+        ("Kamiq", "SUV", (95, 150), 22000),
+        ("Karoq", "SUV", (115, 190), 26000),
     ],
 
     "Seat": [
-        ("Ibiza", "citadine", (80, 150), 9250),
-        ("Leon", "compacte", (110, 300), 13000),
-        ("Arona", "SUV", (95, 150), 13500),
+        ("Ibiza", "citadine", (80, 150), 18000),
+        ("Leon", "compacte", (110, 300), 25000),
+        ("Arona", "SUV", (95, 150), 21000),
     ],
 
     "Mini": [
-        ("Cooper", "citadine", (102, 231), 14000),
-        ("Countryman", "SUV", (136, 306), 18000),
+        ("Cooper", "citadine", (102, 231), 24000),
+        ("Countryman", "SUV", (136, 306), 30000),
     ],
 
     "Volvo": [
-        ("XC40", "SUV", (129, 300), 24000),
-        ("XC60", "SUV", (150, 300), 29000),
-        ("V60", "berline", (150, 300), 24000),
+        ("XC40", "SUV", (129, 300), 36000),
+        ("XC60", "SUV", (150, 300), 46000),
+        ("V60", "berline", (150, 300), 42000),
     ],
 
     "Suzuki": [
-        ("Swift", "citadine", (83, 101), 8750),
-        ("Vitara", "SUV", (102, 129), 12750),
+        ("Swift", "citadine", (83, 101), 16000),
+        ("Vitara", "SUV", (102, 129), 21000),
     ],
 
     "Mazda": [
-        ("Mazda2", "citadine", (75, 115), 8750),
-        ("Mazda3", "compacte", (90, 180), 12500),
-        ("CX-30", "SUV", (122, 186), 18000),
+        ("Mazda2", "citadine", (75, 115), 17000),
+        ("Mazda3", "compacte", (90, 180), 23000),
+        ("CX-30", "SUV", (122, 186), 26000),
     ],
 
     "Honda": [
-        ("Jazz", "citadine", (94, 109), 11250),
-        ("Civic", "compacte", (126, 182), 16000),
-        ("HR-V", "SUV", (105, 131), 15000),
+        ("Jazz", "citadine", (94, 109), 19000),
+        ("Civic", "compacte", (126, 182), 27000),
+        ("HR-V", "SUV", (105, 131), 26000),
     ],
 }
 
-PREMIUM_VOITURE = {"BMW","Mercedes-Benz","Audi","Volvo"}
-FINITION = {"Eco","Confort","Business","Sport"}
+PREMIUM_VOITURE = {"BMW", "Mercedes", "Audi", "Volvo"}  # "Mercedes-Benz" ne matchait jamais la cle "Mercedes"
+
+# Finitions reelles par marque (un set n'a pas d'ordre/index, d'ou le bug :
+# on utilise un dict de listes). Une meme finition n'existe pas forcement
+# chez tous les constructeurs : "GT Line" est du Peugeot/Renault, pas du BMW.
+FINITION_PAR_MARQUE = {
+    "Renault": ["Evolution", "Techno", "Intens", "Equilibre", "Esprit Alpine"],
+    "Peugeot": ["Active", "Allure", "GT", "GT Line"],
+    "Citroen": ["You", "Plus", "Shine", "Max"],
+    "Volkswagen": ["Life", "Style", "R-Line", "United"],
+    "Toyota": ["Dynamic", "Design", "GR Sport"],
+    "Dacia": ["Essential", "Expression", "Journey"],
+    "Ford": ["Trend", "Titanium", "ST-Line"],
+    "BMW": ["Business Design", "M Sport", "xLine", "Luxury Line"],
+    "Mercedes": ["Business", "AMG Line", "Avantgarde"],
+    "Audi": ["Business", "S line", "Design Luxe"],
+    "Fiat": ["Pop", "Lounge", "Sport"],
+    "Opel": ["Edition", "Elegance", "GS Line"],
+    "Nissan": ["Acenta", "N-Connecta", "Tekna"],
+    "Hyundai": ["Initia", "Intuitive", "Executive"],
+    "Kia": ["Motion", "Active", "GT Line"],
+    "Skoda": ["Ambition", "Style", "Sportline"],
+    "Seat": ["Style", "FR", "Xcellence"],
+    "Mini": ["Classic", "Sport", "Exclusive"],
+    "Volvo": ["Core", "Plus", "Ultimate"],
+    "Suzuki": ["Avantage", "Privilege"],
+    "Mazda": ["Prime-Line", "Exclusive-Line", "Homura"],
+    "Honda": ["Comfort", "Elegance", "Advance"],
+}
+FINITION_GENERIQUE = ["Confort", "Business", "Premium"]
+
 COULEUR = ["Blanc", "Noir", "Gris", "Bleu", "Rouge", "Beige", "Vert", "Marron"]
 BASE_OPTIONS = ["Climatisation", "Bluetooth", "Vitres electriques"]
 MID_OPTIONS = BASE_OPTIONS + ["GPS", "Regulateur de vitesse", "Camera de recul"]
@@ -187,7 +217,7 @@ cars = []
 car_id = 1 # sert a attribuer un identifiant unique a chaque voiture.
 
 for marque,modele in MARQUES_MODELE.items():
-    for nom_modele,body_type,(p_min,p_max),prix_ocass in modele:
+    for nom_modele,body_type,(p_min,p_max),prix_neuf in modele:
         for _ in range(VARIANT_PAR_MODELE): #plusieurs exemplaires d'un même modèle
              # Annee ponderee vers le recent
             annee = random.choices(
@@ -219,16 +249,21 @@ for marque,modele in MARQUES_MODELE.items():
             if carburant == "Electrique":
                 boite = "Automatique"
 
-            value_factor = max(0.25, 0.85 ** age)
-            km_penalty = min(0.3, km / 300000)
-            prix = prix_ocass * value_factor * (1 - km_penalty) * random.uniform(0.9, 1.15)
+            # Courbe calibree sur des prix reels d'occasion (Argus, LeBoncoin,
+            # AutoScout24, juillet 2026) : une Clio 2022/60000km se vend
+            # 11-14keur, une BMW X3 2022/45000km se vend 26-45keur.
+            value_factor = max(0.35, 0.94 ** age)
+            km_penalty = min(0.2, km / 400000)
+            prix = prix_neuf * value_factor * (1 - km_penalty) * random.uniform(0.88, 1.05)
             prix = max(1500, round(prix / 100) * 100)
 
-            finition_idx = random.randint(0, len(FINITION) - 1)
-            finition = FINITION[finition_idx]
-            if finition_idx <= 1:
+            finitions_dispo = FINITION_PAR_MARQUE.get(marque, FINITION_GENERIQUE)
+            finition_idx = random.randint(0, len(finitions_dispo) - 1)
+            finition = finitions_dispo[finition_idx]
+            ratio_finition = finition_idx / max(1, len(finitions_dispo) - 1)
+            if ratio_finition <= 0.34:
                 options_pool = BASE_OPTIONS
-            elif finition_idx <= 2:
+            elif ratio_finition <= 0.67:
                 options_pool = MID_OPTIONS
             else:
                 options_pool = HIGH_OPTIONS
@@ -257,7 +292,8 @@ for marque,modele in MARQUES_MODELE.items():
 
 print(f"Total voitures generees: {len(cars)}")
 
-with open("/home/claude/carmatch/backend/data/cars_seed.json", "w", encoding="utf-8") as f:
+OUTPUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cars_seed.json")
+with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
     json.dump(cars, f, ensure_ascii=False, indent=2)
 
-print("Fichier ecrit: cars_seed.json")
+print(f"Fichier ecrit: {OUTPUT_PATH}")
